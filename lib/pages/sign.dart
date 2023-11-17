@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_taxi_tigi_driver/config/configurationCouleur.dart';
 import 'package:flutter_taxi_tigi_driver/global/global.dart';
+import 'package:flutter_taxi_tigi_driver/pages/enregistrerVehicule.dart';
 import 'package:flutter_taxi_tigi_driver/pages/login.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -39,11 +40,11 @@ class _InscriptionState extends State<Inscription> {
               FirebaseDatabase.instance.ref().child("drivers");
           userRef.child(currentUser!.uid).set(userMap);
         }
-        await Fluttertoast.showToast(msg: "Inscription reussit !");
+        await Fluttertoast.showToast(msg: "Enregistrer le vehicule");
         Navigator.push(
-            context, MaterialPageRoute(builder: (index) => Connexion()));
+            context, MaterialPageRoute(builder: (index) => EnregistrerVehicule()));
       }).catchError((errorMessage){
-        Fluttertoast.showToast(msg: "Inscription echoué !");
+        Fluttertoast.showToast(msg: "Enregistrer echoué !");
       });
     }
     else{
@@ -291,7 +292,7 @@ class _InscriptionState extends State<Inscription> {
                                         focusedBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
                                               color: Color(
-                                                  0xFFEDB602)), // Couleur de la bordure lorsqu'elle est désactivée
+                                                  0xFFEDB602)),
                                         ),
                                         labelText: "Confirmer ",
                                         prefixIcon: Icon(
@@ -322,7 +323,7 @@ class _InscriptionState extends State<Inscription> {
                                         _submit();
                                       },
                                       child: Text(
-                                        'S\'inscrire',
+                                        'Continuer',
                                         style: TextStyle(
                                           fontSize: 20,
                                           color: Color.fromARGB(255, 255, 255, 255),
