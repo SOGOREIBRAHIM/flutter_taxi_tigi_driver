@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_taxi_tigi_driver/models/driverModel.dart';
 import 'package:geolocator/geolocator.dart';
@@ -17,3 +19,8 @@ Position? driverCurrentPosition;
 DriverData onlineDriverData = DriverData();
 
 String driverVehiculeType = "";
+
+StreamSubscription<Position>? streamSubscriptionPosition;
+
+StreamSubscription<Position>? streamSubscriptionDriverLivePosition;
+

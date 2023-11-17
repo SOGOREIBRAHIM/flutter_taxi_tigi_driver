@@ -2,12 +2,15 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_taxi_tigi_driver/assistance/assistanceMethode.dart';
 import 'package:flutter_taxi_tigi_driver/config/configurationCouleur.dart';
 import 'package:flutter_taxi_tigi_driver/global/global.dart';
 import 'package:flutter_taxi_tigi_driver/pages/vehicule.dart';
 import 'package:flutter_taxi_tigi_driver/widgets/progressDialog.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -24,7 +27,6 @@ class Maps extends StatefulWidget {
 }
 
 class _MapsState extends State<Maps> {
-
   final Completer<GoogleMapController> _googleMapController = Completer();
   GoogleMapController? newGoogleMapController;
 
@@ -49,45 +51,57 @@ class _MapsState extends State<Maps> {
   }
 
   // Recuperer la position exacte du driver
-   locateDriverPosition() async {
-    Position cPosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  locateDriverPosition() async {
+    Position cPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
     driverCurrentPosition = cPosition;
 
-    LatLng latLngPosition = LatLng(driverCurrentPosition!.latitude, driverCurrentPosition!.longitude);
+    LatLng latLngPosition = LatLng(
+        driverCurrentPosition!.latitude, driverCurrentPosition!.longitude);
 
-    CameraPosition cameraPosition = CameraPosition(target: latLngPosition, zoom: 15);
+    CameraPosition cameraPosition =
+        CameraPosition(target: latLngPosition, zoom: 15);
 
     newGoogleMapController!
         .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
-    String humanReadableAdress = await AssistanceMethode.searchAddressForGeographieCoordonnee(driverCurrentPosition!, context);
+    String humanReadableAdress =
+        await AssistanceMethode.searchAddressForGeographieCoordonnee(
+            driverCurrentPosition!, context);
     print("votre adresse: " + humanReadableAdress);
-
   }
+
   // lire les informations actuelles sur le conducteur
-  readCurrentDriverInformation(){
+  readCurrentDriverInformation() {
     currentUser = firebaseAuth.currentUser;
 
-    FirebaseDatabase.instance.ref()
-      .child("drivers")
-      .child(currentUser!.uid)
-      .once().then((snap) {
+    FirebaseDatabase.instance
+        .ref()
+        .child("drivers")
+        .child(currentUser!.uid)
+        .once()
+        .then((snap) {
+      if (snap.snapshot.value != null) {
+        onlineDriverData.id = (snap.snapshot.value as Map)["id"];
+        onlineDriverData.nom = (snap.snapshot.value as Map)["nom"];
+        onlineDriverData.prenom = (snap.snapshot.value as Map)["prenom"];
+        onlineDriverData.numero = (snap.snapshot.value as Map)["numero"];
+        onlineDriverData.email = (snap.snapshot.value as Map)["email"];
+        onlineDriverData.model =
+            (snap.snapshot.value as Map)["details_car"]["model"];
+        onlineDriverData.matricul =
+            (snap.snapshot.value as Map)["details_car"]["matricul"];
+        onlineDriverData.carteGrise =
+            (snap.snapshot.value as Map)["details_car"]["carteGrise"];
+        onlineDriverData.vignette =
+            (snap.snapshot.value as Map)["details_car"]["vignette"];
+        onlineDriverData.assurence =
+            (snap.snapshot.value as Map)["details_car"]["assurence"];
 
-        if(snap.snapshot.value != null){
-          onlineDriverData.id = (snap.snapshot.value as Map)["id"];
-          onlineDriverData.nom = (snap.snapshot.value as Map)["nom"];
-          onlineDriverData.prenom = (snap.snapshot.value as Map)["prenom"];
-          onlineDriverData.numero = (snap.snapshot.value as Map)["numero"];
-          onlineDriverData.email = (snap.snapshot.value as Map)["email"];
-          onlineDriverData.model = (snap.snapshot.value as Map)["details_car"]["model"];
-          onlineDriverData.matricul = (snap.snapshot.value as Map)["details_car"]["matricul"];
-          onlineDriverData.carteGrise = (snap.snapshot.value as Map)["details_car"]["carteGrise"];
-          onlineDriverData.vignette = (snap.snapshot.value as Map)["details_car"]["vignette"];
-          onlineDriverData.assurence = (snap.snapshot.value as Map)["details_car"]["assurence"];
-
-          driverVehiculeType = (snap.snapshot.value as Map)["details_car"]["type"];
-        }
-      });
+        driverVehiculeType =
+            (snap.snapshot.value as Map)["details_car"]["type"];
+      }
+    });
   }
 
   @override
@@ -111,7 +125,6 @@ class _MapsState extends State<Maps> {
 
   // var geoLocation = Geolocator();
 
- 
   // double bottomPaddingOfMap = 0;
 
   // List<LatLng> pLineCoordinatedList = [];
@@ -121,8 +134,6 @@ class _MapsState extends State<Maps> {
   // Set<Circle> circlesSet = {};
 
   // bool darkTheme = false;
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -156,11 +167,116 @@ class _MapsState extends State<Maps> {
                   // bottomPaddingOfMap = 200;
                 });
               },
-
             ),
+
+            statusText != "Activation"
+                ? Container(
+                    height: MediaQuery.of(context).size.height,
+                    width: double.infinity,
+                    color: Colors.black87,
+                  )
+                : Container(),
+
+            // button activer et desactiver
+            Positioned(
+                top: statusText != "Activation"
+                    ? MediaQuery.of(context).size.height * 0.45
+                    : 40,
+                left: 0,
+                right: 0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                        onPressed: () {
+                          if (isDriverActive != true) {
+                            driverOnlineNow();
+                            updateDriverLocationRealTime();
+
+                            setState(() {
+                              statusText = "Activation";
+                              isDriverActive = true;
+                              buttonColor = Colors.transparent;
+                            });
+                            Fluttertoast.showToast(msg: "Vous etes connecté !");
+                          } else {
+                            driverOffLineNow();
+                            setState(() {
+                              statusText = "Desactiver";
+                              isDriverActive = false;
+                              buttonColor = Colors.grey;
+                            });
+                            Fluttertoast.showToast(
+                                msg: "Vous etes déconnecté !");
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                            primary: buttonColor,
+                            padding: EdgeInsets.symmetric(horizontal: 18),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5)
+                                )
+                                ),
+                            child: statusText != "Activation" ? Text(statusText,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ))
+                            : Icon(
+                                Icons.phonelink_ring,
+                                color: Colors.white,
+                                size: 40,)
+                                ),
+                  ],
+                ))
           ],
         ),
       ),
     );
   }
+
+
+      // chauffeur activer
+      driverOnlineNow() async{
+        Position pos = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high
+        );
+
+        driverCurrentPosition = pos;
+
+        Geofire.initialize("activeDrivers");
+        Geofire.setLocation(currentUser!.uid, driverCurrentPosition!.latitude, driverCurrentPosition!.longitude);
+
+        DatabaseReference ref = FirebaseDatabase.instance.ref().child("drivers").child(currentUser!.uid).child("newRideStatus");
+        ref.set("idle");
+        ref.onValue.listen((event) {});
+      }
+
+      // mise de la postion actuelle du chauffeur
+      updateDriverLocationRealTime(){
+        streamSubscriptionPosition = Geolocator.getPositionStream().listen((Position position) {
+          if (isDriverActive == true) {
+            Geofire.setLocation(currentUser!.uid, driverCurrentPosition!.latitude, driverCurrentPosition!.longitude);
+          }
+          LatLng latLng = LatLng(driverCurrentPosition!.latitude, driverCurrentPosition!.longitude);
+
+          newGoogleMapController!.animateCamera(CameraUpdate.newLatLng(latLng));
+        });
+      }
+
+
+      driverOffLineNow(){
+        Geofire.removeLocation(currentUser!.uid);
+
+        DatabaseReference? ref = FirebaseDatabase.instance.ref().child("drivers").child(currentUser!.uid).child("newRideStatus");
+        ref.onDisconnect();
+        ref.remove();
+        // ref = null;
+
+        Future.delayed(Duration(milliseconds: 2000), (){
+          SystemChannels.platform.invokeMethod("SystemNavigator.pop");
+        });
+      }
+
 }
