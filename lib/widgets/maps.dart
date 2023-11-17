@@ -179,9 +179,7 @@ class _MapsState extends State<Maps> {
 
             // button activer et desactiver
             Positioned(
-                top: statusText != "Activation"
-                    ? MediaQuery.of(context).size.height * 0.45
-                    : 40,
+                top: statusText != "Activation" ? MediaQuery.of(context).size.height * 0.40 : 40,
                 left: 0,
                 right: 0,
                 child: Row(
@@ -217,12 +215,14 @@ class _MapsState extends State<Maps> {
                                 borderRadius: BorderRadius.circular(5)
                                 )
                                 ),
-                            child: statusText != "Activation" ? Text(statusText,
+                            child: statusText != "Activation" ? 
+                              Text("Activation",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
-                                ))
+                                ),
+                                )
                             : Icon(
                                 Icons.phonelink_ring,
                                 color: Colors.white,
