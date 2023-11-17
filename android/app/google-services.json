@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "32540899377",
+    "firebase_url": "https://taxi-tigui-403912-default-rtdb.firebaseio.com",
+    "project_id": "taxi-tigui-403912",
+    "storage_bucket": "taxi-tigui-403912.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:32540899377:android:439023c42046c5cfccbd10",
+        "android_client_info": {
+          "package_name": "com.example.flutter_taxi_tigi_driver"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBON78B38FvuDvWYI4fXtQMaCNXYhT3fbQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:32540899377:android:5250e33f444a0cdeccbd10",
+        "android_client_info": {
+          "package_name": "com.example.flutter_taxi_tigui"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBON78B38FvuDvWYI4fXtQMaCNXYhT3fbQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
