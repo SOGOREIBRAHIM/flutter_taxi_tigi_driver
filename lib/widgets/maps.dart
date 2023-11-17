@@ -4,7 +4,6 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_taxi_tigi_driver/assistance/assistanceMethode.dart';
 import 'package:flutter_taxi_tigi_driver/config/configurationCouleur.dart';
 import 'package:flutter_taxi_tigi_driver/global/global.dart';
-import 'package:flutter_taxi_tigi_driver/infoHandler/app_info.dart';
 import 'package:flutter_taxi_tigi_driver/pages/PreciserDepart.dart';
 import 'package:flutter_taxi_tigi_driver/pages/formAdresse.dart';
 import 'package:flutter_taxi_tigi_driver/widgets/progressDialog.dart';
@@ -13,6 +12,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as loc;
 import 'package:provider/provider.dart';
+
+import '../infoHandler/app_info.dart';
 
 class Maps extends StatefulWidget {
   const Maps({super.key});

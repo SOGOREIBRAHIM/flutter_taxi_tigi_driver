@@ -20,7 +20,7 @@ class AssistanceMethode {
     currentUser = firebaseAuth.currentUser;
     DatabaseReference userRef = FirebaseDatabase.instance
       .ref()
-      .child("users")
+      .child("drivers")
       .child(currentUser!.uid);
       userRef.once().then((snap) {
         if(snap.snapshot.value != null){

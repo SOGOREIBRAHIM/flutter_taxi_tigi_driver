@@ -1,4 +1,5 @@
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_taxi_tigi_driver/config/configurationCouleur.dart';
@@ -25,11 +26,21 @@ class _ConnexionState extends State<Connexion> {
               password: passControler.text.trim())
           .then((auth) async {
             
-        currentUser = auth.user;
-        print(currentUser.toString());
-        await Fluttertoast.showToast(msg: "Connexion reussit");
-        Navigator.push(
-            context, MaterialPageRoute(builder: (index) => accueil()));
+         DatabaseReference userRef =
+              FirebaseDatabase.instance.ref().child("drivers");
+          userRef.child(firebaseAuth.currentUser!.uid).once().then((value) async{
+            final snap = value.snapshot;
+            if (snap.value != null) {
+              currentUser = auth.user;
+              await Fluttertoast.showToast(msg: "Connexion reussit");
+              Navigator.push(context, MaterialPageRoute(builder: (index) => accueil()));
+            }
+            else{
+              await Fluttertoast.showToast(msg: "Vous n'avez pas de compte !");
+              firebaseAuth.signOut();
+              Navigator.push(context, MaterialPageRoute(builder: (index) => Connexion()));
+            }
+          });
       }).catchError((errorMessage){
         Fluttertoast.showToast(msg: "Connexion echoué");
       });
@@ -181,7 +192,7 @@ class _ConnexionState extends State<Connexion> {
                                         _submit();
                                       },
                                       child: Text(
-                                        'S\'inscrire',
+                                        'Se connecter',
                                         style: TextStyle(
                                           fontSize: 20,
                                           color: Color.fromARGB(255, 255, 255, 255),

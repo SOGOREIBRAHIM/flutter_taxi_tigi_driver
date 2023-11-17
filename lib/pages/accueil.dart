@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_taxi_tigi_driver/pages/Profil.dart';
 import 'package:flutter_taxi_tigi_driver/pages/paiement.dart';
 import 'package:flutter_taxi_tigi_driver/pages/trajet.dart';
 import 'package:flutter_taxi_tigi_driver/widgets/home.dart';
@@ -18,7 +19,7 @@ class _accueilState extends State<accueil> {
     Home(),
     Paiement(),
     Trajet(),
-    // Profil(),
+    profil()
 
   ];
 
