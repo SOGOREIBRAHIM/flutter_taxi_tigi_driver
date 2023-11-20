@@ -216,7 +216,7 @@ class _MapsState extends State<Maps> {
                                 )
                                 ),
                             child: statusText != "Activation" ? 
-                              Text("Activation",
+                              Text( "Activation",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
