@@ -1,6 +1,9 @@
 
 
+import 'dart:async';
+
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:flutter_taxi_tigi_driver/assistance/requsetAssistant.dart';
 import 'package:flutter_taxi_tigi_driver/global/global.dart';
 import 'package:flutter_taxi_tigi_driver/infoHandler/app_info.dart';
@@ -76,7 +79,10 @@ class AssistanceMethode {
     directionDetailsInfo.duration_value = responseDirectionApi["routes"][0]["legs"][0]["duration"]["value"];
     
     return directionDetailsInfo;
+  }
 
-
+  static pauseLiveLocationUpdate(){
+    streamSubscriptionPosition!.pause();
+    Geofire.removeLocation(firebaseAuth.currentUser!.uid);
   }
 }

@@ -8,7 +8,9 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_taxi_tigi_driver/assistance/assistanceMethode.dart';
 import 'package:flutter_taxi_tigi_driver/config/configurationCouleur.dart';
 import 'package:flutter_taxi_tigi_driver/global/global.dart';
+import 'package:flutter_taxi_tigi_driver/pages/accueil.dart';
 import 'package:flutter_taxi_tigi_driver/pages/vehicule.dart';
+import 'package:flutter_taxi_tigi_driver/pushNotofication/push_notification_system.dart';
 import 'package:flutter_taxi_tigi_driver/widgets/progressDialog.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -87,19 +89,14 @@ class _MapsState extends State<Maps> {
         onlineDriverData.prenom = (snap.snapshot.value as Map)["prenom"];
         onlineDriverData.numero = (snap.snapshot.value as Map)["numero"];
         onlineDriverData.email = (snap.snapshot.value as Map)["email"];
-        onlineDriverData.model =
-            (snap.snapshot.value as Map)["details_car"]["model"];
-        onlineDriverData.matricul =
-            (snap.snapshot.value as Map)["details_car"]["matricul"];
-        onlineDriverData.carteGrise =
-            (snap.snapshot.value as Map)["details_car"]["carteGrise"];
-        onlineDriverData.vignette =
-            (snap.snapshot.value as Map)["details_car"]["vignette"];
-        onlineDriverData.assurence =
-            (snap.snapshot.value as Map)["details_car"]["assurence"];
+        onlineDriverData.model = (snap.snapshot.value as Map)["details_car"]["model"];
+        onlineDriverData.matricul = (snap.snapshot.value as Map)["details_car"]["matricul"];
+        onlineDriverData.carteGrise = (snap.snapshot.value as Map)["details_car"]["carteGrise"];
+        onlineDriverData.vignette = (snap.snapshot.value as Map)["details_car"]["vignette"];
+        onlineDriverData.assurence = (snap.snapshot.value as Map)["details_car"]["assurence"];
+        onlineDriverData.car_type = (snap.snapshot.value as Map)["details_car"]["type"];
 
-        driverVehiculeType =
-            (snap.snapshot.value as Map)["details_car"]["type"];
+        driverVehiculeType = (snap.snapshot.value as Map)["details_car"]["type"];
       }
     });
   }
@@ -109,6 +106,12 @@ class _MapsState extends State<Maps> {
     // TODO: implement initState
     super.initState();
     checkLocationPermissionAlowed();
+    readCurrentDriverInformation();
+
+    PushNotificationSystem pushNotificationSystem = PushNotificationSystem();
+    pushNotificationSystem.initializeCloudMessaging(context);
+    pushNotificationSystem.generateAndGetToken();
+    
   }
 
 // ===========================================================================
@@ -275,7 +278,7 @@ class _MapsState extends State<Maps> {
         // ref = null;
 
         Future.delayed(Duration(milliseconds: 2000), (){
-          SystemChannels.platform.invokeMethod("SystemNavigator.pop");
+          Navigator.push(context, MaterialPageRoute(builder: (c) => accueil(),));
         });
       }
 

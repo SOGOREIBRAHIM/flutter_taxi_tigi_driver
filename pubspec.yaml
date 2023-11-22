@@ -53,13 +53,16 @@ dependencies:
   flutter_svg: ^2.0.9
   flutter_launcher_icons: ^0.13.1
   provider: ^6.1.1
+  firebase_messaging: ^14.7.5
+  assets_audio_player: ^3.1.1
 
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/icons/logo.jpg"
+  image_path: "assets/icons/logo.png"
   background_color: "#ffffff"
   remove_alpha_ios: true
+
 
 dev_dependencies:
   flutter_test:

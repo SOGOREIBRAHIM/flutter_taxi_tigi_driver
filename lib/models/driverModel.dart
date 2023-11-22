@@ -10,6 +10,7 @@ class DriverData {
   String? carteGrise;
   String? vignette;
   String? assurence;
+  String? car_type;
 
   DriverData({
     this.id,
@@ -22,6 +23,7 @@ class DriverData {
     this.carteGrise,
     this.vignette,
     this.assurence,
+    this.car_type
   });
 
 }
