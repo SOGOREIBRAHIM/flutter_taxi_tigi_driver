@@ -111,32 +111,9 @@ class _MapsState extends State<Maps> {
     PushNotificationSystem pushNotificationSystem = PushNotificationSystem();
     pushNotificationSystem.initializeCloudMessaging(context);
     pushNotificationSystem.generateAndGetToken();
-    
+
   }
 
-// ===========================================================================
-  // LatLng? pickLocation;
-  // loc.Location location = loc.Location();
-  // String? _address;
-
-  // GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
-
-  // Position? userCurrentPosition;
-
-  // String userName = "";
-  // String userEmail = "";
-
-  // var geoLocation = Geolocator();
-
-  // double bottomPaddingOfMap = 0;
-
-  // List<LatLng> pLineCoordinatedList = [];
-  // Set<Polyline> polylineSet = {};
-
-  // Set<Marker> markersSet = {};
-  // Set<Circle> circlesSet = {};
-
-  // bool darkTheme = false;
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_taxi_tigi_driver/pages/Profil.dart';
-import 'package:flutter_taxi_tigi_driver/pages/paiement.dart';
+import 'package:flutter_taxi_tigi_driver/pages/revenu.dart';
 import 'package:flutter_taxi_tigi_driver/pages/trajet.dart';
 import 'package:flutter_taxi_tigi_driver/widgets/home.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -17,7 +17,7 @@ class _accueilState extends State<accueil> {
   int indexCourant = 0;
   List pages = [
     Home(),
-    Paiement(),
+    Revenu(),
     Trajet(),
     profil()
 
@@ -54,8 +54,8 @@ class _accueilState extends State<accueil> {
             },
             items:  [
             BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.house), label: "Accueil"),
-            BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.wallet), label: "Paiement"),
-            BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.route,), label: "Trajet"),
+            BottomNavigationBarItem(icon: Image(image: AssetImage("assets/icons/3.png")), label: "Revenu"),
+            BottomNavigationBarItem(icon: Image(image: AssetImage("assets/icons/2.png")), label: "Trajet"),
             BottomNavigationBarItem(icon: Icon(Icons.person_2,size: 35), label: "Profil"),
                 ],),
           ),

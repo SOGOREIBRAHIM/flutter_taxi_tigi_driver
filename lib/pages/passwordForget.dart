@@ -37,7 +37,7 @@ class _PasswordForgetState extends State<PasswordForget> {
           backgroundColor: Colors.white,
           title: Center(
             child: Text(
-              "Connexion",
+              "Mot de passe oublié",
               style: TextStyle(
                 color: MesCouleur().couleurPrincipal,
                 fontWeight: FontWeight.bold,
@@ -114,6 +114,10 @@ class _PasswordForgetState extends State<PasswordForget> {
                                         onPressed: () {
                                           _submit();
                                         },
+                                        style: ElevatedButton.styleFrom(
+                                    backgroundColor: MesCouleur().couleurPrincipal// Définir la couleur du bouton
+                                    // Vous pouvez également personnaliser d'autres propriétés ici
+                                  ),
                                         child: Text(
                                           'Lien de réinitialisation envoyé',
                                           style: TextStyle(

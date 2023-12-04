@@ -17,7 +17,7 @@ class PushNotificationSystem {
 
   Future initializeCloudMessaging(BuildContext context) async{
     // Terminer
-    // lorsque l'application est fermée et ouverte directement depuis la notification push
+    // lorsque l'application est fermée et ouverte directement recoit la notification push
     FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? remoteMessage){
       if (remoteMessage != null) {
         // lire les informations sur la demande de trajet de l'utilisateur
@@ -39,10 +39,12 @@ class PushNotificationSystem {
 
   // lire les informations sur la demande de trajet de l'utilisateur
       readUserRideRequestInfo(String userRideRequestId, BuildContext context){
-        FirebaseDatabase.instance.ref().child("All Ride Requests").child("driverId").onValue.listen((event) {
+        FirebaseDatabase.instance.ref().child("All Ride Request").child(userRideRequestId).child("driverId").onValue.listen((event) {
           if (event.snapshot.value == "waiting" || event.snapshot.value == firebaseAuth.currentUser!.uid) {
-            FirebaseDatabase.instance.ref().child("All Ride Requests").child(userRideRequestId).once().then((snapData) {
+            FirebaseDatabase.instance.ref().child("All Ride Request").child(userRideRequestId).once().then((snapData) {
+              print(snapData.snapshot.value.toString());
               if(snapData.snapshot.value != null){
+                
                 audioPlayer.open(Audio("music/music_notification.mp3"));
                 audioPlayer.play();
 
@@ -61,10 +63,10 @@ class PushNotificationSystem {
 
                 UserRideRequestInfo userRideRequestDetails = UserRideRequestInfo();
                 userRideRequestDetails.originLatLng = LatLng(originLat, originLong);
-                userRideRequestDetails.originAddress = originAddress as String?;
+                userRideRequestDetails.originAdress = originAddress as String?;
                 userRideRequestDetails.destinationLatLng = LatLng(destinationLat, destinationLong);
-                userRideRequestDetails.destinationAddress = destinationAddress as String?;
-                userRideRequestDetails.username = username;
+                userRideRequestDetails.destinationAdress = destinationAddress as String?;
+                userRideRequestDetails.username = username;           
                 userRideRequestDetails.userPhone = userPhone;
 
                 userRideRequestDetails.rideRequestId = rideRequestId;
@@ -82,7 +84,7 @@ class PushNotificationSystem {
           }
           else{
             Fluttertoast.showToast(msg: "Cette notification a ete annulé");
-            Navigator.pop(context);
+            // Navigator.pop(context);
           }
         });
       } 
@@ -93,8 +95,7 @@ class PushNotificationSystem {
         print("FCM registrationToken token ${registrationToken}");
 
       // Définir le token FCM dans la base de données en temps réel Firebase
-        FirebaseDatabase.instance
-          .ref()
+        FirebaseDatabase.instance.ref()
           .child("drivers")
           .child(firebaseAuth.currentUser!.uid)
           .child("token")

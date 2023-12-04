@@ -5,8 +5,8 @@ class UserRideRequestInfo {
   
   LatLng? originLatLng;
   LatLng? destinationLatLng;
-  String? originAddress;
-  String? destinationAddress;
+  String? originAdress;
+  String? destinationAdress;
   String? rideRequestId;
   String? username;
   String? userPhone;
@@ -14,8 +14,8 @@ class UserRideRequestInfo {
   UserRideRequestInfo({
     this.originLatLng,
     this.destinationLatLng,
-    this.originAddress,
-    this.destinationAddress,
+    this.originAdress,
+    this.destinationAdress,
     this.rideRequestId,
     this.userPhone,
     this.username

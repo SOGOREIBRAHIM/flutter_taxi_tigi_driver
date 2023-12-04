@@ -27,3 +27,5 @@ StreamSubscription<Position>? streamSubscriptionDriverLivePosition;
 
 AssetsAudioPlayer audioPlayer = AssetsAudioPlayer();
 
+String API_KEY = "AIzaSyDDGtmVxuMl8rMOacYgbdEfghp2xpOeYQg";
+

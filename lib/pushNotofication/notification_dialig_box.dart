@@ -13,9 +13,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 class NotifacationDialogBox extends StatefulWidget {
 
-  NotifacationDialogBox({super.key, required UserRideRequestInfo userRideRequestDetails});
+  // NotifacationDialogBox({super.key, required UserRideRequestInfo userRideRequestDetails});
 
-  UserRideRequestInfo? userRideRequestInfo;
+  UserRideRequestInfo? userRideRequestDetails;
+
+  NotifacationDialogBox({super.key, this.userRideRequestDetails});
 
   @override
   State<NotifacationDialogBox> createState() => _NotifacationDialogBoxState();
@@ -40,10 +42,7 @@ class _NotifacationDialogBoxState extends State<NotifacationDialogBox> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(
-              onlineDriverData.car_type == "Car" ? "assets/images/RAV.png"
-                : onlineDriverData.car_type == "CNG" ? "assets/images/RAV.png"
-                : "assets/images/RAV.png",
+            Image.asset("assets/images/RAV.png",
             ),
             SizedBox(height: 8,),
             Text(
@@ -69,7 +68,7 @@ class _NotifacationDialogBoxState extends State<NotifacationDialogBox> {
                       Expanded(
                         child: Container(
                           child: Text(
-                            widget.userRideRequestInfo!.originAddress!,
+                            widget.userRideRequestDetails!.originAdress!,
                             style: TextStyle(fontSize: 16, color: MesCouleur().couleurPrincipal),
                           ),
                       ),)
@@ -84,7 +83,7 @@ class _NotifacationDialogBoxState extends State<NotifacationDialogBox> {
                   SizedBox(width: 10,),
                   Expanded(
                     child: Text(
-                      widget.userRideRequestInfo!.destinationAddress!,
+                      widget.userRideRequestDetails!.destinationAdress!,
                       style: TextStyle(fontSize: 16, color: MesCouleur().couleurPrincipal),
                     ))
                     ],
@@ -143,9 +142,9 @@ class _NotifacationDialogBoxState extends State<NotifacationDialogBox> {
   }
 
   accepteRideRequest(BuildContext context){
-    FirebaseDatabase.instance.ref().child(firebaseAuth.currentUser!.uid).child("newRideStatus").once().then((snap) {
+    FirebaseDatabase.instance.ref().child("drivers").child(firebaseAuth.currentUser!.uid).child("newRideStatus").once().then((snap) {
       if (snap.snapshot.value == "Idle") {
-        FirebaseDatabase.instance.ref().child("drivers").child(firebaseAuth.currentUser!.uid).child("newRideStatus").set("accepter");
+        FirebaseDatabase.instance.ref().child("drivers").child(firebaseAuth.currentUser!.uid).child("newRideStatus").set("accepted");
 
         AssistanceMethode.pauseLiveLocationUpdate();
 

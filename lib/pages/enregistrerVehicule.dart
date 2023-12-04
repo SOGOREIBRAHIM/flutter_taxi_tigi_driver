@@ -21,7 +21,7 @@ class _EnregistrerVehiculeState extends State<EnregistrerVehicule> {
   final VignetteController = TextEditingController();
   final AssuranceController = TextEditingController();
 
-  List<String> typeVehicule = ["Prenium", "Economique", "Moto"];
+  List<String> typeVehicule = ["Prenium", "Economie", "Moto"];
   String? selectionner;
 
   final _formKey = GlobalKey<FormState>();
@@ -35,6 +35,7 @@ class _EnregistrerVehiculeState extends State<EnregistrerVehicule> {
         "model": modelController.text.trim(),
         "vignette": VignetteController.text.trim(),
         "assurance": AssuranceController.text.trim(),
+        "type": selectionner
       };
       DatabaseReference userRef =
           FirebaseDatabase.instance.ref().child("drivers");
@@ -279,6 +280,10 @@ class _EnregistrerVehiculeState extends State<EnregistrerVehicule> {
                                       onPressed: () {
                                         _submit();
                                       },
+                                      style: ElevatedButton.styleFrom(
+                                    backgroundColor: MesCouleur().couleurPrincipal// Définir la couleur du bouton
+                                    // Vous pouvez également personnaliser d'autres propriétés ici
+                                  ),
                                       child: Text(
                                         'Confirmer',
                                         style: TextStyle(

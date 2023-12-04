@@ -88,8 +88,8 @@ class _ConnexionState extends State<Connexion> {
                       decoration: const BoxDecoration(
                           color: Color.fromARGB(255, 255, 255, 255),
                           borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(70),
-                              topRight: Radius.circular(70))),
+                              topLeft: Radius.circular(0),
+                              topRight: Radius.circular(100))),
                       child: Column(
                         children: [
                           SizedBox(height: 50,),
@@ -191,6 +191,10 @@ class _ConnexionState extends State<Connexion> {
                                       onPressed: () {
                                         _submit();
                                       },
+                                      style: ElevatedButton.styleFrom(
+                                    backgroundColor: MesCouleur().couleurPrincipal// Définir la couleur du bouton
+                                    // Vous pouvez également personnaliser d'autres propriétés ici
+                                  ),
                                       child: Text(
                                         'Se connecter',
                                         style: TextStyle(
