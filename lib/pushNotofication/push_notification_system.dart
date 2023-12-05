@@ -26,21 +26,21 @@ class PushNotificationSystem {
     });
     // premier plan
     // lorsque l'application est ouverte et reçoit la notification push
-    FirebaseMessaging.onMessage.listen((RemoteMessage? remoteMessage) { 
-      readUserRideRequestInfo(remoteMessage!.data["rideRequestId"], context);
+    FirebaseMessaging.onMessage.listen((RemoteMessage remoteMessage) { 
+      readUserRideRequestInfo(remoteMessage.data["rideRequestId"], context);
     });
 
     // Backgroung
     // lorsque l'application est en arrière-plan et ouverte directement depuis les informations push
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage? remoteMessage) { 
-      readUserRideRequestInfo(remoteMessage!.data["rideRequestId"], context);
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage remoteMessage) { 
+      readUserRideRequestInfo(remoteMessage.data["rideRequestId"], context);
     });
   } 
 
   // lire les informations sur la demande de trajet de l'utilisateur
       readUserRideRequestInfo(String userRideRequestId, BuildContext context){
         FirebaseDatabase.instance.ref().child("All Ride Request").child(userRideRequestId).child("driverId").onValue.listen((event) {
-          if (event.snapshot.value == "waiting" || event.snapshot.value == firebaseAuth.currentUser!.uid) {
+          if (event.snapshot.value == "waiting") {
             FirebaseDatabase.instance.ref().child("All Ride Request").child(userRideRequestId).once().then((snapData) {
               print(snapData.snapshot.value.toString());
               if(snapData.snapshot.value != null){
@@ -57,7 +57,7 @@ class PushNotificationSystem {
                 double destinationAddress = (snapData.snapshot.value! as Map)["destinationAdress"];
 
                 String username = (snapData.snapshot.value as Map)["username"];
-                String userPhone = (snapData.snapshot.value as Map)["userPhone"];
+                String userphone = (snapData.snapshot.value as Map)["userphone"];
 
                 String? rideRequestId = snapData.snapshot.key;
 
@@ -67,7 +67,7 @@ class PushNotificationSystem {
                 userRideRequestDetails.destinationLatLng = LatLng(destinationLat, destinationLong);
                 userRideRequestDetails.destinationAdress = destinationAddress as String?;
                 userRideRequestDetails.username = username;           
-                userRideRequestDetails.userPhone = userPhone;
+                userRideRequestDetails.userPhone = userphone;
 
                 userRideRequestDetails.rideRequestId = rideRequestId;
 

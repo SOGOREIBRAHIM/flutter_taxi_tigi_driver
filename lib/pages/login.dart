@@ -1,4 +1,5 @@
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,7 +19,7 @@ class Connexion extends StatefulWidget {
 
 class _ConnexionState extends State<Connexion> {
 
-  void _submit() async {
+  void _submit1() async {
     if (_formKey.currentState!.validate()) {
       await firebaseAuth
           .signInWithEmailAndPassword(
@@ -49,6 +50,72 @@ class _ConnexionState extends State<Connexion> {
       Fluttertoast.showToast(msg: "Remplissez les champs vides");
     }
   }
+
+  void _submit() async {
+  if (_formKey.currentState!.validate()) {
+    try {
+      UserCredential userCredential = await firebaseAuth.signInWithEmailAndPassword(
+        email: emailControler.text.trim(),
+        password: passControler.text.trim(),
+      );
+
+      // Vérifier le statut du conducteur après la connexion
+      await checkDriverStatus(userCredential.user!.uid);
+
+      // Si le statut est vérifié et le conducteur est activé
+      currentUser = userCredential.user;
+      await Fluttertoast.showToast(msg: "Connexion réussie");
+      Navigator.push(context, MaterialPageRoute(builder: (index) => accueil()));
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found' || e.code == 'wrong-password') {
+        print('Identifiants invalides');
+        Fluttertoast.showToast(msg: "Identifiants invalides");
+      } else if (e.code == 'user-disabled') {
+        print('Le conducteur est désactivé. Impossible de se connecter.');
+        Fluttertoast.showToast(msg: "Le conducteur est désactivé. Impossible de se connecter.");
+        firebaseAuth.signOut();
+        Navigator.push(context, MaterialPageRoute(builder: (index) => Connexion()));
+      } else {
+        print(e.message);
+        Fluttertoast.showToast(msg: "Connexion échouée");
+      }
+    } catch (e) {
+      print(e.toString());
+      Fluttertoast.showToast(msg: "Connexion échouée");
+    }
+  } else {
+    Fluttertoast.showToast(msg: "Remplissez les champs vides");
+  }
+}
+
+Future<void> checkDriverStatus(String driverId) async {
+  DatabaseReference driversRef = FirebaseDatabase.instance.ref().child("drivers").child(driverId);
+
+  DataSnapshot snapshot = (await driversRef.once()) as DataSnapshot;
+
+  if (snapshot.value != null && snapshot.value is Map) {
+    Map<dynamic, dynamic>? data = snapshot.value as Map<dynamic, dynamic>?;
+
+    if (data != null) {
+      dynamic activeValue = data["active"];
+      
+      if (activeValue is bool) {
+        bool isActive = activeValue;
+
+        if (!isActive) {
+          throw FirebaseAuthException(
+            code: 'user-disabled',
+            message: 'Le conducteur est désactivé. Impossible de se connecter.',
+          );
+        }
+      }
+    }
+  }
+}
+
+
+
+
 
   
   final emailControler = TextEditingController();

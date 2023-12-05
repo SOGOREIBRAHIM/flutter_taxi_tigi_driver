@@ -29,6 +29,7 @@ class _InscriptionState extends State<Inscription> {
         if (currentUser != null) {
           Map userMap = {
             "id": currentUser!.uid,
+            "active": true,
             "nom": nomControler.text.trim(),
             "prenom": prenomControler.text.trim(),
             "numero": numControler.text.trim(),
