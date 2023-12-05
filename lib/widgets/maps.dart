@@ -252,7 +252,7 @@ class _MapsState extends State<Maps> {
         DatabaseReference? ref = FirebaseDatabase.instance.ref().child("drivers").child(currentUser!.uid).child("newRideStatus");
         ref.onDisconnect();
         ref.remove();
-        // ref = null;
+        ref = null;
 
         Future.delayed(Duration(milliseconds: 2000), (){
           Navigator.push(context, MaterialPageRoute(builder: (c) => accueil(),));

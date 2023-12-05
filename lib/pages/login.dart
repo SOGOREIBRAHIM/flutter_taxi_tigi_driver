@@ -19,39 +19,63 @@ class Connexion extends StatefulWidget {
 
 class _ConnexionState extends State<Connexion> {
 
-  void _submit1() async {
-    if (_formKey.currentState!.validate()) {
-      await firebaseAuth
-          .signInWithEmailAndPassword(
-              email: emailControler.text.trim(),
-              password: passControler.text.trim())
-          .then((auth) async {
-            
-         DatabaseReference userRef =
-              FirebaseDatabase.instance.ref().child("drivers");
-          userRef.child(firebaseAuth.currentUser!.uid).once().then((value) async{
-            final snap = value.snapshot;
-            if (snap.value != null) {
-              currentUser = auth.user;
-              await Fluttertoast.showToast(msg: "Connexion reussit");
-              Navigator.push(context, MaterialPageRoute(builder: (index) => accueil()));
-            }
-            else{
+  void _submit() async {
+  if (_formKey.currentState!.validate()) {
+    await firebaseAuth
+        .signInWithEmailAndPassword(
+            email: emailControler.text.trim(),
+            password: passControler.text.trim())
+        .then((auth) async {
+          
+       DatabaseReference userRef =
+            FirebaseDatabase.instance.ref().child("drivers");
+        userRef.child(firebaseAuth.currentUser!.uid).once().then((value) async{
+          final snap = value.snapshot;
+          if (snap.value != null) {
+            // L'utilisateur a un compte, vérifiez maintenant le statut
+            Map<dynamic, dynamic>? userData = snap.value as Map<dynamic, dynamic>?;
+
+            if (userData != null) {
+              dynamic activeValue = userData["active"];
+
+              if (activeValue is bool) {
+                bool isActive = activeValue;
+
+                if (isActive) {
+                  // L'utilisateur est activé, connectez-le
+                  currentUser = auth.user;
+                  await Fluttertoast.showToast(msg: "Connexion réussie");
+                  Navigator.push(context, MaterialPageRoute(builder: (index) => accueil()));
+                } else {
+                  // L'utilisateur est désactivé
+                  await Fluttertoast.showToast(msg: "Votre compte est désactivé.");
+                  firebaseAuth.signOut();
+                  Navigator.push(context, MaterialPageRoute(builder: (index) => Connexion()));
+                }
+              } else {
+                // La clé "active" n'est pas de type booléen
+                print("Erreur : le statut 'active' n'est pas de type booléen");
+                Fluttertoast.showToast(msg: "Erreur de connexion");
+              }
+            } else {
+              // Le snapshot ne contient pas de données utilisateur
               await Fluttertoast.showToast(msg: "Vous n'avez pas de compte !");
               firebaseAuth.signOut();
               Navigator.push(context, MaterialPageRoute(builder: (index) => Connexion()));
             }
-          });
-      }).catchError((errorMessage){
-        Fluttertoast.showToast(msg: "Connexion echoué");
-      });
-    }
-    else{
-      Fluttertoast.showToast(msg: "Remplissez les champs vides");
-    }
+          }
+        });
+    }).catchError((errorMessage){
+      Fluttertoast.showToast(msg: "Connexion échouée");
+    });
   }
+  else{
+    Fluttertoast.showToast(msg: "Remplissez les champs vides");
+  }
+}
 
-  void _submit() async {
+
+  void _submit1() async {
   if (_formKey.currentState!.validate()) {
     try {
       UserCredential userCredential = await firebaseAuth.signInWithEmailAndPassword(
