@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_taxi_tigi_driver/listReservationEnAttente.dart';
 import 'package:flutter_taxi_tigi_driver/pages/Profil.dart';
 import 'package:flutter_taxi_tigi_driver/pages/revenu.dart';
 import 'package:flutter_taxi_tigi_driver/pages/trajet.dart';
@@ -18,7 +19,7 @@ class _accueilState extends State<accueil> {
   List pages = [
     Home(),
     Revenu(),
-    Trajet(),
+    ListeReservationEnAttente(),
     profil()
 
   ];

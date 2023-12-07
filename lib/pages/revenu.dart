@@ -9,6 +9,42 @@ class Revenu extends StatefulWidget {
 }
 
 class _RevenuState extends State<Revenu> {
+
+  final trajetControler = TextEditingController();
+  final taxiControler = TextEditingController();
+  final chauffControler = TextEditingController();
+
+
+void calculerPourcentage() {
+  
+  // Assurez-vous que la saisie est non nulle et est un nombre valide
+  if (trajetControler.text.isNotEmpty) {
+    // Convertissez le texte en double
+    double valeurTrajet = double.parse(trajetControler.text);
+
+    // Calculez 20% de la valeur du trajet
+    double pourcentage = valeurTrajet * 0.20;
+
+    // Mettez à jour le texte dans taxiController avec le résultat
+    taxiControler.text = pourcentage.toString();
+    print(taxiControler.text);
+  } else {
+    // Gérez le cas où la saisie est vide ou non valide
+    taxiControler.text = "Erreur";
+  }
+}
+
+
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // calculerPourcentage();
+  }
+
+  
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,7 +104,7 @@ class _RevenuState extends State<Revenu> {
                   Padding(
                     padding: const EdgeInsets.all(1),
                     child: TextFormField(
-                      // controller: _controleurMontant,
+                      controller: trajetControler,
                       decoration: const InputDecoration(
                         suffix: Text("FCFA"),
                         prefixIcon: ImageIcon(
@@ -84,6 +120,9 @@ class _RevenuState extends State<Revenu> {
                                   0xFFEDB602)), // Couleur de la bordure lorsqu'elle est désactivée
                         ),
                       ),
+                      onChanged: (value) {
+                        calculerPourcentage();
+                      },
                     ),
                   ),
                   SizedBox(
@@ -92,7 +131,7 @@ class _RevenuState extends State<Revenu> {
                   Padding(
                     padding: const EdgeInsets.all(1),
                     child: TextFormField(
-                      // controller: _controleurMontant,
+                      controller: taxiControler,
                       decoration: const InputDecoration(
                         suffix: Text("FCFA"),
                         prefixIcon: ImageIcon(
@@ -110,30 +149,7 @@ class _RevenuState extends State<Revenu> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 40,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(1),
-                    child: TextFormField(
-                      // controller: _controleurMontant,
-                      decoration: const InputDecoration(
-                        suffix: Text("FCFA"),
-                        prefixIcon: ImageIcon(
-                          AssetImage("assets/images/cash2.png"),
-                          color: Color(0xFFEDB602),
-                          size: 20,
-                        ),
-                        border: UnderlineInputBorder(),
-                        labelText: 'Montant du chauffeur',
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Color(
-                                  0xFFEDB602)), // Couleur de la bordure lorsqu'elle est désactivée
-                        ),
-                      ),
-                    ),
-                  ),
+                  
                   SizedBox(height: 80,),
                   Container(
                     width: 300,

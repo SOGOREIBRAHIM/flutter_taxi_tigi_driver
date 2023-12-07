@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_taxi_tigi_driver/config/configurationCouleur.dart';
 import 'package:flutter_taxi_tigi_driver/global/global.dart';
+import 'package:flutter_taxi_tigi_driver/models/reservation.dart';
 import 'package:flutter_taxi_tigi_driver/models/reservationModel.dart';
 import 'package:flutter_taxi_tigi_driver/models/userModel.dart';
+import 'package:flutter_taxi_tigi_driver/pages/accueil.dart';
 
 
 class ListeReservationEnAttente extends StatefulWidget {
@@ -26,45 +28,99 @@ class _ListeReservationEnAttenteState extends State<ListeReservationEnAttente> {
   //   return allRideRequest;  
   // }
 
-   static Future<void> getAllUsers() async {
-    DatabaseReference rideRequest = FirebaseDatabase.instance.ref().child("All Ride Request");
+  //  static Future<void> getAllUsers() async {
+  //   DatabaseReference rideRequest = FirebaseDatabase.instance.ref().child("All Ride Request");
 
-    final snap = await rideRequest.once();
-    if(snap.snapshot.value != null){
+  //   final snap = await rideRequest.once();
+  //   if(snap.snapshot.value != null){
       
-      Map<dynamic, dynamic> reservationMap = snap.snapshot.value as Map<dynamic, dynamic>;
-      listReservation = [];
-    reservationMap.forEach((key, value) {
-    print('ID: $key');
-    RideRequest reservationModel = RideRequest(
-      userphone: key,
-      destinationAdress: value["nom"],
-      time: value["prenom"],
-      originAdress: value["numero"],
-      username: value["email"]
-    ); 
+  //     Map<dynamic, dynamic> reservationMap = snap.snapshot.value as Map<dynamic, dynamic>;
+  //     listReservation = [];
+  //   reservationMap.forEach((key, value) {
+  //   print('ID: $key');
+  //   RideRequest reservationModel = RideRequest(
+  //     userphone: key,
+  //     destinationAdress: value["nom"],
+  //     time: value["prenom"],
+  //     originAdress: value["numero"],
+  //     username: value["email"]
+  //   ); 
 
-    listReservation.add(reservationModel);
-    print(listReservation);
+  //   listReservation.add(reservationModel);
+  //   print(listReservation);
     
-  });
+  // });
 
   
 
-    }
+  //   }
     
+  // }
+
+  static Future<void> getAllReservation() async {
+  DatabaseReference reservationRef = FirebaseDatabase.instance.ref().child("All Ride Request");
+  final snap = await reservationRef.once();
+
+  if(snap.snapshot.value != null){
+    Map<dynamic, dynamic> reservationMap = snap.snapshot.value as Map<dynamic, dynamic>;
+
+    // Effacer la liste avant de la remplir pour éviter d'accumuler des éléments
+    listReservation.clear();
+
+    reservationMap.forEach((key, value) {
+      print('ID: $key');
+      print('${value}');
+      ReservationModel reservationModel = ReservationModel(
+        destinationAdress: value["destinationAdress"],
+        originAdress: value["originAdress"],
+        username: value["username"],
+        userphone: value["userphone"],
+      ); 
+
+      listReservation.add(reservationModel);
+    });
+
+    print("Listes des réservations");
+    print(listReservation);
   }
+}
 
   @override
   void initState() {
-    getAllUsers();
     super.initState();
+    getAllReservation().then((value) {
+      setState(() {
+        
+      });
+    });
   }
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xFFFFFFFF),
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          "Revenu",
+          style:
+              TextStyle(color: Color(0xFFEDB602), fontWeight: FontWeight.bold),
+        ),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (c) => accueil()),
+              );
+            },
+            icon: const Icon(
+              Icons.close,
+              color: Color(0xFFEDB602),
+              size: 30,
+            )),
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -94,100 +150,25 @@ class _ListeReservationEnAttenteState extends State<ListeReservationEnAttente> {
               ),
             ),
             
-            Container(
-              
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  childAspectRatio: 2,
-                  crossAxisSpacing: 0,
-                  mainAxisSpacing: 0,
-                ), 
-                shrinkWrap: true,
-                // physics: NeverScrollableScrollPhysics(),
-                itemCount: listReservation.length,
-                itemBuilder: (context, index){
-                  return Container(
-                    child: Padding(
-                      padding: EdgeInsets.all(15.0),
-                      child: Container(
-                       height: 10,
-                       width: 110,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Color.fromARGB(255, 239, 253, 178),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color.fromARGB(255, 187, 187, 187),
-                                spreadRadius: 2,
-                                blurRadius: 1,
-                              )
-                            ]),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: CircleAvatar(
-                                                        // backgroundImage: AssetImage("assets/images/1.png"),
-                                  radius: 40,
-                                  backgroundColor: MesCouleur().couleurPrincipal,
-                                  child: Text("MK", style: TextStyle(fontSize: 40,fontWeight: FontWeight.bold),)
-                                ),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SizedBox(height: 30,),
-                                Row(
-                                  children: [
-                                    Icon(Icons.person, color: MesCouleur().couleurPrincipal,),
-                                    SizedBox(width: 20,),
-                                    Text(
-                                      "${listReservation[index].username}"
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 0,),
-                                Row(
-                                  children: [
-                                    Icon(Icons.person, color: MesCouleur().couleurPrincipal,),
-                                    SizedBox(width: 20,),
-                                    Text(
-                                      "${listReservation[index].userphone}"
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 0,),
-                                Row(
-                                  children: [
-                                    Icon(Icons.phone_android, color: MesCouleur().couleurPrincipal,),
-                                    SizedBox(width: 20,),
-                                    Text(
-                                      "${listReservation[index].userphone}"
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 0,),
-                                Row(
-                                  children: [
-                                    Icon(Icons.email, color: MesCouleur().couleurPrincipal,),
-                                    SizedBox(width: 20,),
-                                    Text(
-                                      "${listReservation[index].userphone}"
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Container(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: listReservation.length,
+                  itemBuilder: (BuildContext context, int index) {  
+                    return Card(
+                      child: ListTile(
+                        leading: Image.asset("assets/icons/reservation.png"),
+                        title:  Text("${listReservation[index].destinationAdress}"),
+                        subtitle: Text("${listReservation[index].originAdress}"),
+                        trailing: Icon(Icons.arrow_forward_ios_sharp),
                       ),
-                    ),
-                  );
-                 } ,
+                    );
+                  },
+              
                 ),
+              ),
             )
           ],
         ),
